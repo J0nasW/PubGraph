@@ -1,0 +1,11 @@
+# General
+alive_progress
+typing
+pandas
+
+termcolor
+argparse
+
+# Keyword Generation
+yake
+keybert
