@@ -2,6 +2,7 @@
 alive_progress
 typing
 pandas
+tqdm
 
 termcolor
 argparse
@@ -9,3 +10,12 @@ argparse
 # Keyword Generation
 yake
 keybert
+nltk
+flair
+
+
+# Visualization
+plotly
+
+python-Levenshtein
+fuzzywuzzy
