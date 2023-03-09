@@ -21,14 +21,16 @@ from fuzzywuzzy.process import dedupe, fuzz
 import plotly.express as px
 import plotly.offline as pyo
 
+from helpers.read_keywords import *
+
 # USER INPUT
 NR_KEYWORDS = 10 # Number of keywords to be extracted per text
 N_GRAM_RANGE = (1, 2) # N-gram range for the model
 STOP_WORDS = "english" # Stop words for the model
 
 DEDUPE_THRESHOLD = 75
-
-MANUAL_CANDIDATES = None # Can be None; Can be a list of strings
+MANUAL_CANDIDATES = read_n_grams("ai_candidates_n_grams.txt") + read_unigrams("ai_candidates_unigrams.txt") # Can be None; Can be a list of strings
+YAKE_CANDIDATES = False
 
 FLAIR_MODEL = "allenai/scibert_scivocab_cased" # Can be None; Can handle multiple Huggingface Models
 HF_MODEL = None # Can be None; Can handle Huggingface Models with "Feature Extraction"
@@ -75,12 +77,17 @@ def process_keywords(text):
 
     if MANUAL_CANDIDATES:
         candidates = MANUAL_CANDIDATES
-    else:
+        print(candidates)
+        key_model.extract_keywords(text, candidates=candidates, keyphrase_ngram_range=N_GRAM_RANGE, top_n=NR_KEYWORDS, stop_words=STOP_WORDS)
+    elif YAKE_CANDIDATES:
         # YAKE Keywords:
         candidates = yake_kw_extractor.extract_keywords(text)
         candidates = [candidate[0] for candidate in candidates]    
+        key_model.extract_keywords(text, candidates=candidates, keyphrase_ngram_range=N_GRAM_RANGE, top_n=NR_KEYWORDS, stop_words=STOP_WORDS)
+    else:
+        key_model.extract_keywords(text, keyphrase_ngram_range=N_GRAM_RANGE, top_n=NR_KEYWORDS, stop_words=STOP_WORDS)
 
-    return key_model.extract_keywords(text, candidates=candidates, keyphrase_ngram_range=N_GRAM_RANGE, top_n=NR_KEYWORDS, stop_words=STOP_WORDS)
+    return 
 
 
 def generate_keywords(df, text_choice, output_dir=None):
@@ -127,7 +134,7 @@ def generate_keywords_dict(keywords_df, text_choice, nr_documents):
     df_keywords_only = pd.DataFrame(columns=["keywords"])
     df_keywords_only["keywords"] = keywords_df[column_name]
 
-    # Flatten the list of keywords
+    # Flatten the list of keywords if it is not empty
     df_keywords_only["keywords"] = df_keywords_only["keywords"].apply(lambda x: [item[0] for item in x])
 
     # Extract the keywords from the column "keywords" and create new rows for each keyword
@@ -146,19 +153,19 @@ def generate_keywords_dict(keywords_df, text_choice, nr_documents):
     print("Number of keywords after dropping exact duplicates: " + str(len(df_keywords_only)) + " (-" + str(counter - len(df_keywords_only)) + ")")
     counter = len(df_keywords_only)
 
-    keywords_only_list = df_keywords_only["keywords"].tolist()
+    # keywords_only_list = df_keywords_only["keywords"].tolist()
 
-    # Drop duplicates that are similar
-    deduped_keywords = list(dedupe(keywords_only_list, threshold=DEDUPE_THRESHOLD, scorer=fuzz.ratio))
+    # # Drop duplicates that are similar
+    # deduped_keywords = list(dedupe(keywords_only_list, threshold=DEDUPE_THRESHOLD, scorer=fuzz.ratio))
 
-    # Create a new dataframe with the deduped keywords
-    df_keywords_only = pd.DataFrame(deduped_keywords, columns=["keywords"])
+    # # Create a new dataframe with the deduped keywords
+    # df_keywords_only = pd.DataFrame(deduped_keywords, columns=["keywords"])
 
-    print("Number of keywords after deduping with threshold of " + str(DEDUPE_THRESHOLD) + ": " + str(len(df_keywords_only)) + " (-" + str(counter - len(df_keywords_only)) + ")")
-    counter = len(df_keywords_only)
+    # print("Number of keywords after deduping with threshold of " + str(DEDUPE_THRESHOLD) + ": " + str(len(df_keywords_only)) + " (-" + str(counter - len(df_keywords_only)) + ")")
+    # counter = len(df_keywords_only)
 
     # Clean the keywords by using several nltk corpora
-    nltk.download('stopwords', quiet=True)
+    # nltk.download('stopwords', quiet=True)
     # nltk.download('wordnet')
     # nltk.download('words')
     # nltk.download('names')
