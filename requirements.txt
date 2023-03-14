@@ -8,14 +8,15 @@ termcolor
 argparse
 
 # Keyword Generation
-yake
+keyphrase_vectorizers
 keybert
-nltk
-flair
+scikit-learn
 
+# Topic Modelling
+bertopic
+
+# OpenAlex
+pyalex
 
 # Visualization
 plotly
-
-python-Levenshtein
-fuzzywuzzy
