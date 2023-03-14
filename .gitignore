@@ -130,4 +130,9 @@ dmypy.json
 
 # CUSTOM
 *.json
+*.txt
+*.html
 .DS_Store
+._.DS_Store
+._.*
+/tmp
