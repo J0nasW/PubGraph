@@ -38,7 +38,8 @@ from helpers.cli_loader import load_bar
 
 class TopicModelling():
 
-    def __init__(self, docs_df, text_choice, num_topics="auto"):
+    def __init__(self, docs_df, text_choice):
+        self.save_topic_model = False
         # self.sentence_model = SentenceTransformer("pritamdeka/S-Scibert-snli-multinli-stsb")
         # self.sentence_model = SentenceTransformer("all-mpnet-base-v2")
         self.sentence_model = SentenceTransformer("all-distilroberta-v1")
@@ -53,7 +54,7 @@ class TopicModelling():
         self.top_n_words = 10
         self.docs_df = docs_df
         self.text_choice = text_choice
-        self.num_topics = num_topics
+        self.num_topics = "auto"
         
     def tm_generator(self):
         
@@ -120,19 +121,6 @@ class TopicModelling():
                                                         word_length=15,
                                                         separator=", ")
             topic_model.set_topic_labels(topic_labels)
-            
-            try:
-            
-                # Put topics and probs in dataframe
-                tm_df = pd.DataFrame({"id": ids, "title": titles, "topic": topics, "probability": probs})
-                # Add the topic labels to the dataframe
-                tm_df["topic_label"] = tm_df["topic"].apply(lambda x: topic_model.get_topic(x))
-                
-            except Exception as e:
-                print(e)
-                print("Error in writing to DataFrame. Skipping...")
-                # Write DataFrame with zeros
-                tm_df = pd.DataFrame({"id": ids, "title": titles, "topic": [0] * len(ids), "probability": [0] * len(ids)})
 
         with load_bar("Generating Visualization..."):
 
@@ -144,17 +132,39 @@ class TopicModelling():
             # topic_model.visualize_barchart(titles).show()
 
             # Save plot as HTML file
-            plot_name = self.text_choice + "_topic_model_visualization.html"
+            plot_name = "output/visualizations/" + self.text_choice + "_topic_model_visualization.html"
             pyo.plot(fig, filename=plot_name)
             
         with load_bar("Saving topic model..."):
-            tm_name = self.text_choice + "_topic_model"
-            topic_model.save(tm_name)
+            if self.save_topic_model:
+                # Save topic model
+                tm_name = "output/" + self.text_choice + "_topic_model"
+                topic_model.save(tm_name)
+                
+            try:
+                # Generate a set of topics and probabilities
+                topics_set = list(set(topics))
+                topic_lables = [topic_model.get_topic(topic) for topic in topics_set]
+                
+                # Create a list of ids that correspond to the topics
+                associated_ids = []
+                associated_titles = []
+                for topic in topics_set:
+                    associated_ids.append([ids[i] for i, x in enumerate(topics) if x == topic])
+                    associated_titles.append([titles[i] for i, x in enumerate(topics) if x == topic])
+
+                # Create a dataframe with the topics and their associated ids
+                tm_df = pd.DataFrame({"topic": topics_set, "topic_label": topic_lables, "id": associated_ids, "title": associated_titles})
+                
+                # print(tm_df)
+                print("Done processing files. Got " + str(len(tm_df)) + " topics.")
+
+            except Exception as e:
+                print(e)
+                print("Error in writing the topics and probabilities to the DataFrame. Skipping...")
             
             # Save tm_df as JSON file
-            tm_df_name = self.text_choice + "_topic_model_df.json"
+            tm_df_name = "output/" + self.text_choice + "_topic_model.json"
             tm_df.to_json(tm_df_name, orient="records", lines=True)
             
-        return tm_df
-        
-        
+        return tm_df_name

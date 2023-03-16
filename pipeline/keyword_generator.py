@@ -54,7 +54,7 @@ class Keyword_Generator():
         with load_bar("Generating Keywords with Vectorizer..."):
             # Use Pool Multiprocessing with tqdm to show progress
             if self.use_multiprocessing:
-                usable_cpu_cores = os.cpu_count() - 6
+                usable_cpu_cores = os.cpu_count() - 2
                 texts_with_keywords = process_map(self.keyword_gen, texts, max_workers=usable_cpu_cores)
             else:
                 texts_with_keywords = self.keyword_gen(texts)
@@ -69,12 +69,14 @@ class Keyword_Generator():
             df_keywords.loc[i] = [self.docs_df["id"][i], texts_with_keywords[i]]
 
         # Save the dataframe as a json file
-        file_name = column_name + ".json"
-        df_keywords.to_json(file_name, orient="records", lines=True)            
+        file_name = "output/" + column_name + ".json"
+        df_keywords.to_json(file_name, orient="records", lines=True)        
+        
+        self.generate_keywords_dict(df_keywords, self.text_choice)    
             
-        return df_keywords
+        return file_name
     
-    def generate_keywords_dict(self, keywords_df, text_choice, nr_documents):
+    def generate_keywords_dict(self, keywords_df, text_choice):
 
         with load_bar("Generating Keywords dict and visual representation..."):
 
@@ -108,7 +110,7 @@ class Keyword_Generator():
             vectors = vectorizer.fit_transform(df_keywords_only["keywords"])
 
             # Perform k-means clustering https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
-            kmeans = KMeans(n_clusters=nr_documents, init='k-means++', max_iter=500, n_init="auto")
+            kmeans = KMeans(n_clusters=8, init='k-means++', max_iter=500, n_init="auto")
             clusters = kmeans.fit_predict(vectors)
 
             # Add cluster labels to DataFrame
@@ -146,6 +148,6 @@ class Keyword_Generator():
                         
 
         # Save plot as HTML file
-        pyo.plot(fig, filename='cluster_plot_keywords.html')
+        pyo.plot(fig, filename="output/visualizations/keywords_cluster_plot.html")
 
-        fig.show()
+        # fig.show()
