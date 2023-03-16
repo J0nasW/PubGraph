@@ -25,7 +25,7 @@ PubGraph can be used in two ways: either as a standalone tool or as a module for
 To use PubGraph as a standalone tool, simply run the `pubgraph.py` script with the following arguments:
 
 ```bash
-python pubgraph.py -s -i <input_file> -c <text_choice>
+python main.py -s -i <input_file> -c <text_choice>
 ```
 
 The input file should be a JSON file containing the publications to be processed. You can choose any key inside your JSON file to be analyzed, provided you state the flag -c and denote for example the key abstract with `abstract` (or fulltexts with `text`). The library will automatically create an output folder for any generated files and visualizations.
@@ -43,32 +43,32 @@ Here are some examples of how to use PubGraph as a standalone tool:
 To run the generation pipeline on the first 1000 rows of the arXiv metadata JSON file while analyzing only the abstracts, use the following command:
 
 ```bash
-python pubgraph.py -s -i arxiv-metadata-oai-snapshot.json -c abstract -r 1000
+python main.py -s -i arxiv-metadata-oai-snapshot.json -c abstract -r 1000
 ```
 
 If you wish to run the generation pipeline on the first 1000 rows of fulltexts instead, first you should use [PubCrawl](https://github.com/J0nasW/PubCrawl) to download and process the fulltexts. Then, you can use the following command:
 
 ```bash
-python pubgraph.py -s -i arxiv-metadata-oai-snapshot.json -c text -r 1000
+python main.py -s -i arxiv-metadata-oai-snapshot.json -c text -r 1000
 ```
 
 You also have the chance of running the pipeline on the full dataset. However, this will take a lot of time and memory. If you wish to do so, simply remove the `-r` flag.
 
 ```bash
-python pubgraph.py -s -i arxiv-metadata-oai-snapshot.json -c text
+python main.py -s -i arxiv-metadata-oai-snapshot.json -c text
 ```
 
 ##### Analysis Pipeline
 To run the analysis pipeline on the first 1000 rows of the arXiv metadata JSON file while analyzing only the abstracts, provide the `-a` flag:
 
 ```bash
-python pubgraph.py -s -i arxiv-metadata-oai-snapshot.json -c abstract -r 1000 -a
+python main.py -s -i arxiv-metadata-oai-snapshot.json -c abstract -r 1000 -a
 ```
 
 If you have already run the generation pipeline the analysis pipeline will automatically detect the existing output files and use them. If you wish to rerun the analysis pipeline, you have to delete the output folder first or declare a rerun in the user input. You can also use the `-f` flag to force the pipeline to rerun even if there is an existing output folder.
 
 ```bash
-python pubgraph.py -s -i arxiv-metadata-oai-snapshot.json -c abstract -r 1000 -a -f
+python main.py -s -i arxiv-metadata-oai-snapshot.json -c abstract -r 1000 -a -f
 ```
 
 ### API
