@@ -63,6 +63,8 @@ if __name__ == "__main__":
             if args.rows:
                 print(colored("✓ You have chosen to process only {} rows out of {}.".format(args.rows, len(data)), "yellow"))
                 data = data.head(args.rows)
+            else:
+                print(colored("✓ You have chosen to process all {} rows.".format(len(data)), "yellow"))
         print(colored("Data loaded.", "green", attrs=["bold"]))
         print("")
             
