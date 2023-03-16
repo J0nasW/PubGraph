@@ -45,8 +45,8 @@ class TopicModelling():
         self.sentence_model = SentenceTransformer("all-distilroberta-v1")
         # self.representation_model = PartOfSpeech("en_core_web_sm")
         self.vectorizer_model = CountVectorizer()
-        self.umap_model = UMAP(n_neighbors=3, n_components=5, min_dist=0.4, metric='cosine')
-        self.hdbscan_model = HDBSCAN(min_cluster_size = 15, gen_min_span_tree=True, prediction_data=True)
+        self.umap_model = UMAP(n_neighbors=5, n_components=5, min_dist=0.4, metric='cosine')
+        self.hdbscan_model = HDBSCAN(min_cluster_size = 10, gen_min_span_tree=True, prediction_data=True)
         self.ctfidf_model = ClassTfidfTransformer(reduce_frequent_words=True)
         self.representation_model = MaximalMarginalRelevance(diversity=0.3)
         self.ngram_range = (1, 3)
@@ -54,7 +54,7 @@ class TopicModelling():
         self.top_n_words = 10
         self.docs_df = docs_df
         self.text_choice = text_choice
-        self.num_topics = "auto"
+        self.num_topics = 50
         
     def tm_generator(self):
         

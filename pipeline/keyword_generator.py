@@ -110,7 +110,9 @@ class Keyword_Generator():
             vectors = vectorizer.fit_transform(df_keywords_only["keywords"])
 
             # Perform k-means clustering https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
-            kmeans = KMeans(n_clusters=8, init='k-means++', max_iter=500, n_init="auto")
+            # Calculate the perfect amount of n_clusters
+            n_cluster_nr = int(len(df_keywords_only["keywords"].unique()) / 10)
+            kmeans = KMeans(n_clusters=n_cluster_nr, init='k-means++', max_iter=500, n_init="auto")
             clusters = kmeans.fit_predict(vectors)
 
             # Add cluster labels to DataFrame
