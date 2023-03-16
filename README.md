@@ -32,7 +32,7 @@ The input file should be a JSON file containing the publications to be processed
 
 PubGraph is equipped with a lot of convenience features. For example, you can use the `-r` flag to only process a certain number of rows. This is very helpful for testing purposes. You can also use the `-f` flag to force the pipeline to rerun even if there is an existing output folder. This is useful if you want to rerun the pipeline with different parameters. Furthermore, you can use the `-a` flag to only run the analysis pipeline. This is useful if you want to rerun the analysis with different parameters.
 
-The library is actively monitoring the directory and will detect existing output files. If you want to rerun the pipeline, you have to delete the output folder first or declare a rerun in the user input.
+The library is actively monitoring the directory and will detect existing output files. If you want to rerun the pipeline, you have to delete the output folder first or declare a rerun in the user input. Using the `-m` flag, you can also manually specify all input files from the generation pipeline. This is useful if you want to rerun the analysis with different parameters that are stored in another location.
 
 ### Examples
 
@@ -80,6 +80,7 @@ The package can be called using the following arguments:
 | -i, --input <input_file> | str | The path to the input file. |
 | -c, --text_choice <JSON_key> | str | Selection of key in JSON file that contains the text to be analyzed. |
 | -r, --row <nr_rows> | int | Number of rows to be analyzed. Can be quite helpful for testing purposes. |
+| -m, --manual_files | bool | Use manual file locations for the pipeline. |
 | -f, --force | bool | Force rerun of the pipeline even if there is an existing output folder. |
 | -a, --analyze | bool | Analyze the data. |
 

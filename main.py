@@ -30,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--text_choice", type=str, help="Selection of key in JSON file that contains the text to be analyzed. Example: -c abstract", required=True)
     parser.add_argument("-r", "--rows", type=int, help="Number of rows to be analyzed. Example: -r 1000")
     parser.add_argument("-f", "--force", action="store_true", help="Force rerun of the pipeline. Example: -f")
+    parser.add_argument("-m", "--manual_files", action="store_true", help="Use manual file locations for the pipeline. Example: -m")    
     
     # parser.add_argument("-k", "--keywords", action="store_true", help="Generate Keywords or use local keywords file. Example: -k")
     # parser.add_argument("-t", "--topic_model", action="store_true", help="Generate Topic Model or use local topic model file. Example: -t")
@@ -79,14 +80,18 @@ if __name__ == "__main__":
                 local_keyword_file = "output/" + args.text_choice + "_keywords.json"
                 print("")
         else:
-            print(colored("We did not find any Keywords file.", "yellow"))
-            # Ask the user for the path to the local keywords file
-            print(colored("If you have the Keywords JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
-            print("")
-            # Get user input
-            input_local_keyword_file = input()
-            if os.path.isfile(input_local_keyword_file):
-                local_tm_file = input_local_keyword_file
+            if args.manual_files:
+                print(colored("We did not find any Keywords file.", "yellow"))
+                # Ask the user for the path to the local keywords file
+                print(colored("If you have the Keywords JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
+                print("")
+                # Get user input
+                input_local_keyword_file = input()
+                if os.path.isfile(input_local_keyword_file):
+                    local_tm_file = input_local_keyword_file
+                else:
+                    print(colored("The file you provided does not exist. Skipping...", "yellow"))
+                    user_input_rerun_keyword_gen = "yes"
             else:
                 user_input_rerun_keyword_gen = "yes"
             
@@ -105,14 +110,18 @@ if __name__ == "__main__":
                 local_tm_file = "output/" + args.text_choice + "_topic_model.json"
                 print("")
         else:
-            print(colored("We did not find any Topic Model file.", "yellow"))
-            # Ask the user for the path to the local keywords file
-            print(colored("If you have the Topic Modelling JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
-            print("")
-            # Get user input
-            input_local_tm_file = input()
-            if os.path.isfile(input_local_tm_file):
-                local_tm_file = input_local_tm_file
+            if args.manual_files:
+                print(colored("We did not find any Topic Model file.", "yellow"))
+                # Ask the user for the path to the local keywords file
+                print(colored("If you have the Topic Modelling JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
+                print("")
+                # Get user input
+                input_local_tm_file = input()
+                if os.path.isfile(input_local_tm_file):
+                    local_tm_file = input_local_tm_file
+                else:
+                    print(colored("The file you provided does not exist. Skipping...", "yellow"))
+                    user_input_rerun_keyword_gen = "yes"
             else:
                 user_input_rerun_tm = "yes"
             
@@ -131,14 +140,18 @@ if __name__ == "__main__":
                 local_oalex_file = "output/" + args.text_choice + "_openalex_ids.json"
                 print("")
         else:
-            print(colored("We did not find any OpenAlex file.", "yellow"))
-            # Ask the user for the path to the local keywords file
-            print(colored("If you have the OpenAlex ID file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
-            print("")
-            # Get user input
-            input_local_oalex_file = input()
-            if os.path.isfile(input_local_oalex_file):
-                local_oalex_file = input_local_oalex_file
+            if args.manual_files:
+                print(colored("We did not find any OpenAlex file.", "yellow"))
+                # Ask the user for the path to the local keywords file
+                print(colored("If you have the OpenAlex ID file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
+                print("")
+                # Get user input
+                input_local_oalex_file = input()
+                if os.path.isfile(input_local_oalex_file):
+                    local_oalex_file = input_local_oalex_file
+                else:
+                    print(colored("The file you provided does not exist. Skipping...", "yellow"))
+                    user_input_rerun_keyword_gen = "yes"
             else:
                 user_input_rerun_openalex = "yes"
                 
@@ -205,14 +218,18 @@ if __name__ == "__main__":
                     local_author_analysis_file = "output/" + args.text_choice + "_author_analysis.json"
                     print("")
             else:
-                print(colored("We did not find any Author Analysis file.", "yellow"))
-                # Ask the user for the path to the local author analysis file
-                print(colored("If you have the Author Analysis JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
-                print("")
-                # Get user input
-                input_local_author_analysis_file = input()
-                if os.path.isfile(input_local_author_analysis_file):
-                    local_author_analysis_file = input_local_author_analysis_file
+                if args.manual_files:
+                    print(colored("We did not find any Author Analysis file.", "yellow"))
+                    # Ask the user for the path to the local author analysis file
+                    print(colored("If you have the Author Analysis JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
+                    print("")
+                    # Get user input
+                    input_local_author_analysis_file = input()
+                    if os.path.isfile(input_local_author_analysis_file):
+                        local_author_analysis_file = input_local_author_analysis_file
+                    else:
+                        print(colored("The file you provided does not exist. Skipping...", "yellow"))
+                        user_input_rerun_keyword_gen = "yes"
                 else:
                     user_input_rerun_author_analysis = "yes"
                     
@@ -228,14 +245,18 @@ if __name__ == "__main__":
                     local_author_tm_file = "output/" + args.text_choice + "_author_topic_model.json"
                     print("")
             else:
-                print(colored("We did not find any Author Topic Model file.", "yellow"))
-                # Ask the user for the path to the local author analysis file
-                print(colored("If you have the Author Topic Model JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
-                print("")
-                # Get user input
-                input_local_author_tm = input()
-                if os.path.isfile(input_local_author_tm):
-                    local_author_tm_file = input_local_author_tm
+                if args.manual_files:
+                    print(colored("We did not find any Author Topic Model file.", "yellow"))
+                    # Ask the user for the path to the local author analysis file
+                    print(colored("If you have the Author Topic Model JSON file in another place, please provide the path here. Otherwise skip this step with ENTER.", "blue", attrs=["bold"]))
+                    print("")
+                    # Get user input
+                    input_local_author_tm = input()
+                    if os.path.isfile(input_local_author_tm):
+                        local_author_tm_file = input_local_author_tm
+                    else:
+                        print(colored("The file you provided does not exist. Skipping...", "yellow"))
+                        user_input_rerun_keyword_gen = "yes"
                 else:
                     user_input_rerun_author_tm = "yes"
             
