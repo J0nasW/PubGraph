@@ -35,6 +35,7 @@ from bertopic.representation import KeyBERTInspired
 import plotly.offline as pyo
 
 from helpers.cli_loader import load_bar
+from helpers.plotters import advanced_topic_model_plot
 
 class TopicModelling():
 

@@ -70,9 +70,12 @@ class Keyword_Generator():
 
         # Save the dataframe as a json file
         file_name = "output/" + column_name + ".json"
-        df_keywords.to_json(file_name, orient="records", lines=True)        
+        df_keywords.to_json(file_name, orient="records", lines=True)
         
-        self.generate_keywords_dict(df_keywords, self.text_choice)    
+        try:        
+            self.generate_keywords_dict(df_keywords, self.text_choice)    
+        except Exception as e:
+            print("Error generating keywords dict: " + str(e))
             
         return file_name
     
